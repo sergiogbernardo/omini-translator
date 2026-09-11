@@ -326,7 +326,7 @@ function loadFavorites() {
   for (const item of raw) {
     if (!item || typeof item !== 'object') continue;
     const { source, target } = item;
-    if (!(source === AUTO || isLangCode(source)) || !isLangCode(target)) continue;
+    if (!(source === AUTO || isLangCode(source)) || !isLangCode(target) || source === target) continue;
     const key = `${source}>${target}`;
     if (seen.has(key)) continue;
     seen.add(key);
@@ -875,6 +875,11 @@ function toggleFavorite() {
     favorites.splice(index, 1);
     announce('Par removido dos favoritos.');
   } else {
+    const { sourceSel: from, target: to } = currentSelection();
+    if (from === to) {
+      setLibraryNotice('Escolha idiomas de origem e destino diferentes para favoritar o par.');
+      return;
+    }
     if (favorites.length >= FAVORITES_LIMIT) {
       setLibraryNotice(`Limite de ${FAVORITES_LIMIT} pares favoritos. Remova um par para adicionar outro.`);
       return;

@@ -38,3 +38,13 @@ Os worktrees em `.orchestration/` estavam em branches sem nenhum commit (não de
 - Leitura em voz alta e cópia não foram verificadas manualmente (headless).
 - Workflow do Pages não executado: nada foi enviado ao GitHub. O remoto `sergiogbernardo/omini-translator` não foi verificado nem sincronizado.
 - Decisões ainda abertas no README (favoritos entraram na interface; histórico com 12 entradas, desativado por padrão).
+
+## Após a validação do Antigravity
+
+Veredito do Antigravity: aprovado com ressalvas, nenhum defeito de severidade alta (ver `reports/validacao-antigravity-2026-09-11.md`). Os três defeitos apontados foram confirmados e corrigidos:
+
+- Média: `textarea` sem rótulo acessível → `aria-labelledby="source-title"`.
+- Baixa: favoritar par com origem igual ao destino → bloqueado, e pares assim são ignorados ao carregar.
+- Baixa: entidades nomeadas além das 5 básicas ficavam literais → mapeadas as mais comuns (`&nbsp;`, aspas tipográficas, travessões, `&hellip;` etc.).
+
+Depois das correções: `npm test` 25/25 e verificação no navegador 15/15, sem erros de console.

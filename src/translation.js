@@ -121,7 +121,11 @@ function providerError(message, status) {
 }
 
 function decodeEntities(value) {
-  const named = { amp: "&", apos: "'", gt: ">", lt: "<", quot: '"' };
+  const named = {
+    amp: "&", apos: "'", gt: ">", lt: "<", quot: '"', nbsp: "\u00a0",
+    hellip: "…", mdash: "—", ndash: "–", laquo: "«", raquo: "»",
+    lsquo: "‘", rsquo: "’", ldquo: "“", rdquo: "”", euro: "€", copy: "©", reg: "®",
+  };
   return value.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/giu, (entity, body) => {
     if (body.toLowerCase().startsWith("#x")) {
       const codePoint = Number.parseInt(body.slice(2), 16);

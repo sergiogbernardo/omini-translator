@@ -83,6 +83,13 @@ test("translation is sequential, reports progress, preserves separators, and dec
   assert.deepEqual(progress, [{ completed: 0, total: 2 }, { completed: 1, total: 2 }, { completed: 2, total: 2 }]);
 });
 
+test("decodes common named entities returned by the provider", async () => {
+  const result = await translateText("hello", {
+    source: "en", target: "pt", fetchImpl: async () => response("A&nbsp;B &laquo;x&raquo; &hellip; &unknown;"),
+  });
+  assert.equal(result, "A\u00a0B «x» … &unknown;");
+});
+
 test("sends only requests within the provider byte limit", async () => {
   const queries = [];
   const result = await translateText("a".repeat(1200), {
