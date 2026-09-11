@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omini Translator</title>
+  <meta name="description" content="Tradutor de textos com MyMemory, sem cadastro. Até 5.000 caracteres por tradução.">
+  <meta name="theme-color" content="#0d2a5c">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f63d1'/%3E%3Ccircle cx='16' cy='16' r='8.5' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Cpath d='M16 7.5a8.5 8.5 0 0 1 8.5 8.5' fill='none' stroke='%239cc2ff' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2.2' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#source-text">Ir para o texto a traduzir</a>
+
+  <header class="appbar">
+    <div class="appbar__inner">
+      <a class="brand" href="./" aria-label="Omini Translator, página inicial">
+        <svg class="brand__mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false">
+          <rect width="32" height="32" rx="8" fill="#1f63d1"/>
+          <circle cx="16" cy="16" r="8.5" fill="none" stroke="#fff" stroke-width="3"/>
+          <path d="M16 7.5a8.5 8.5 0 0 1 8.5 8.5" fill="none" stroke="#9cc2ff" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="16" cy="16" r="2.2" fill="#fff"/>
+        </svg>
+        <span class="brand__name">Omini <span class="brand__sub">Translator</span></span>
+      </a>
+      <p class="appbar__meta">
+        <span class="appbar__dot" aria-hidden="true"></span>
+        Provedor: MyMemory · uso anônimo
+      </p>
+    </div>
+  </header>
+
+  <main class="workspace" id="main">
+    <div id="boot-error" class="boot-error" role="alert" hidden>
+      <strong>Não foi possível iniciar o aplicativo.</strong>
+      Recarregue a página. Se o arquivo foi aberto diretamente do disco, use um servidor local, pois o navegador bloqueia módulos JavaScript nesse modo.
+    </div>
+
+    <section class="toolbar" aria-label="Idiomas">
+      <div class="langs">
+        <div class="field">
+          <label class="field__label" for="source-lang">De</label>
+          <select id="source-lang" class="select"></select>
+        </div>
+        <button id="swap" class="icon-btn" type="button" aria-label="Inverter idiomas" title="Inverter idiomas">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>
+        </button>
+        <div class="field">
+          <label class="field__label" for="target-lang">Para</label>
+          <select id="target-lang" class="select"></select>
+        </div>
+      </div>
+      <button id="favorite-toggle" class="ghost-btn" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>
+        <span id="favorite-label">Favoritar par</span>
+      </button>
+    </section>
+
+    <p id="detect-note" class="detect-note" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      <span>A detecção é uma <strong>estimativa local</strong>, baseada em alfabeto e palavras comuns. Pode errar em textos curtos ou mistos; confira e selecione o idioma manualmente se necessário.</span>
+    </p>
+
+    <div class="panes">
+      <section class="pane pane--source" aria-labelledby="source-title">
+        <header class="pane__head">
+          <h2 id="source-title" class="pane__title">Texto original</h2>
+          <span id="detect-pill" class="pill" hidden></span>
+        </header>
+        <textarea id="source-text" class="source-input" spellcheck="true" autocomplete="off"
+          placeholder="Digite ou cole o texto a traduzir…"
+          aria-describedby="char-count limit-msg action-hint"></textarea>
+        <p id="limit-msg" class="field-error" hidden></p>
+        <footer class="pane__foot">
+          <p id="char-count" class="counter" title="Contagem por pontos de código Unicode. Alguns emojis compostos contam como mais de um caractere.">0 / 5.000</p>
+          <div class="pane__tools">
+            <button id="listen-source" class="tool-btn" type="button" aria-pressed="false">
+              <svg class="ico-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              <svg class="ico-stop" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+              <span class="tool-btn__label">Ouvir</span>
+            </button>
+            <button id="clear-source" class="tool-btn" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+              <span class="tool-btn__label">Limpar</span>
+            </button>
+            <button id="translate" class="btn btn--primary" type="button">
+              <span id="translate-label">Traduzir</span>
+              <kbd id="translate-kbd" class="btn__kbd">Ctrl Enter</kbd>
+            </button>
+          </div>
+        </footer>
+        <p id="action-hint" class="action-hint" aria-live="polite"></p>
+      </section>
+
+      <section id="result-pane" class="pane pane--result" aria-labelledby="result-title" aria-busy="false">
+        <header class="pane__head">
+          <h2 id="result-title" class="pane__title">Tradução</h2>
+          <span id="result-badge" class="badge badge--idle">Pronto</span>
+        </header>
+
+        <div id="progress" class="status status--progress" hidden>
+          <div class="status__row">
+            <span class="spinner" aria-hidden="true"></span>
+            <p class="status__text"><strong id="progress-title">Traduzindo…</strong> <span id="progress-detail"></span></p>
+            <button id="cancel" class="btn btn--quiet btn--sm" type="button">Cancelar</button>
+          </div>
+          <div id="progress-bar" class="progress" role="progressbar" aria-label="Progresso da tradução" aria-valuemin="0" aria-valuemax="100">
+            <span id="progress-fill" class="progress__fill"></span>
+          </div>
+        </div>
+
+        <div id="notice" class="status status--notice" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <p id="notice-text" class="status__text"></p>
+          <button id="notice-dismiss" class="icon-btn icon-btn--sm" type="button" aria-label="Fechar aviso">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+
+        <div id="error" class="status status--error" role="alert" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5h.01"/></svg>
+          <div class="status__body">
+            <p id="error-title" class="status__title"></p>
+            <p id="error-message" class="status__text"></p>
+            <p id="error-detail" class="status__detail" hidden></p>
+            <div class="status__actions">
+              <button id="retry" class="btn btn--danger btn--sm" type="button">Tentar novamente</button>
+              <button id="error-dismiss" class="btn btn--quiet btn--sm" type="button">Fechar</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="stale-note" class="stale-note" hidden>
+          O texto ou os idiomas mudaram depois desta tradução. Clique em <strong>Traduzir</strong> para atualizar.
+        </div>
+
+        <div class="result-wrap">
+          <div id="result-output" class="result-output" tabindex="0" role="region" aria-labelledby="result-title" hidden></div>
+
+          <div id="result-loading" class="result-loading" aria-hidden="true" hidden>
+            <span></span><span></span><span></span><span></span>
+          </div>
+
+          <div id="result-empty" class="empty">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 13h6"/></svg>
+            <p id="empty-title" class="empty__title">A tradução aparecerá aqui</p>
+            <p id="empty-text" class="empty__text">Escolha os idiomas, digite o texto e clique em Traduzir.</p>
+          </div>
+        </div>
+
+        <footer class="pane__foot">
+          <p id="result-meta" class="result-meta"></p>
+          <div class="pane__tools">
+            <button id="listen-result" class="tool-btn" type="button" aria-pressed="false" disabled>
+              <svg class="ico-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              <svg class="ico-stop" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+              <span class="tool-btn__label">Ouvir</span>
+            </button>
+            <button id="copy-result" class="tool-btn" type="button" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+              <span class="tool-btn__label" id="copy-label">Copiar</span>
+            </button>
+          </div>
+        </footer>
+      </section>
+    </div>
+
+    <section class="notice-card" aria-labelledby="privacy-title">
+      <svg class="notice-card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6l-7-3z"/></svg>
+      <div>
+        <h2 id="privacy-title" class="notice-card__title">Privacidade e limites</h2>
+        <ul class="notice-card__list">
+          <li>Ao clicar em Traduzir, o texto é enviado ao serviço público <strong>MyMemory</strong> (Translated), sem conta, chave ou e-mail. Não use para conteúdo confidencial.</li>
+          <li>O MyMemory limita o uso anônimo a cerca de <strong>5.000 caracteres por dia</strong>, contados pelo provedor. O contador acima mostra só o tamanho do texto atual; não é um saldo disponível.</li>
+          <li>Histórico e favoritos ficam apenas neste navegador. O histórico vem desativado e só grava traduções se você ativá-lo.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="library" aria-label="Favoritos e histórico">
+      <div class="card">
+        <header class="card__head">
+          <h2 class="card__title">Pares favoritos</h2>
+        </header>
+        <ul id="favorites-list" class="chips"></ul>
+        <p id="favorites-empty" class="card__empty">Nenhum par salvo. Use <strong>Favoritar par</strong> para acessar combinações frequentes.</p>
+      </div>
+
+      <div class="card">
+        <header class="card__head">
+          <h2 class="card__title">Histórico local</h2>
+          <button id="history-clear" class="btn btn--quiet btn--sm" type="button" hidden>Apagar histórico</button>
+        </header>
+        <label class="switch">
+          <input id="history-enabled" type="checkbox" role="switch">
+          <span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span>
+          <span class="switch__label">Salvar traduções concluídas neste navegador</span>
+        </label>
+        <ul id="history-list" class="history"></ul>
+        <p id="history-empty" class="card__empty">Nenhuma tradução salva.</p>
+      </div>
+
+      <p id="library-notice" class="library-notice" role="status" hidden></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Omini Translator · Traduções automáticas fornecidas por MyMemory; podem conter erros. Revise antes de usar.</p>
+  </footer>
+
+  <div id="announcer" class="sr-only" aria-live="polite"></div>
+
+  <template id="tpl-favorite">
+    <li class="chip">
+      <button class="chip__apply" type="button"></button>
+      <button class="chip__remove" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </li>
+  </template>
+
+  <template id="tpl-history">
+    <li class="history__item">
+      <button class="history__open" type="button">
+        <span class="history__meta"><span class="history__pair"></span><span class="history__time"></span></span>
+        <span class="history__source"></span>
+        <span class="history__result"></span>
+      </button>
+      <button class="history__remove icon-btn icon-btn--sm" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>
+      </button>
+    </li>
+  </template>
+
+  <script type="module" src="src/app.js"></script>
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        if (!document.documentElement.hasAttribute('data-app-ready')) {
+          var el = document.getElementById('boot-error');
+          if (el) el.hidden = false;
+        }
+      }, 0);
+    });
+  </script>
+</body>
+</html>
