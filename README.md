@@ -2,7 +2,9 @@
 
 Evolução do TranslatorVG: tradutor de textos com visual executivo, minimalista, branco e azul, e suporte a textos maiores.
 
-**Estado:** planejamento. Este README registra o que foi escolhido e orienta as próximas tarefas. Propostas e pendências não são decisões aprovadas. A implementação ainda não começou.
+**Estado:** primeira entrega integrada localmente em `main` (11/09/2026), ainda não publicada nem validada pelo Antigravity. Ver `reports/integracao-2026-09-11.md`. Propostas e pendências abaixo continuam não aprovadas.
+
+Executar localmente: `npm start` (servidor em http://localhost:8080) e `npm test` (testes offline do módulo de tradução). A página usa módulos ES e não funciona aberta diretamente do disco.
 
 ## Decisões confirmadas
 
