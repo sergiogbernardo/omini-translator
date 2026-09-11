@@ -1,6 +1,21 @@
 # Primeira entrega — proposta de execução
 
-Estado: tarefas preparadas, ainda não enviadas às CLIs. O README é a referência de decisões; este arquivo delimita a execução após o fechamento do briefing.
+## Onde paramos — 11/09/2026
+
+Primeira entrega **publicada** em https://sabion.io/omini-translator/ (HTTPS obrigatório) e listada no hub em https://sabion.io/labs/omini-translator. Validada pelo Antigravity (aprovado com ressalvas; as 3 ressalvas foram corrigidas). Detalhes em `reports/integracao-2026-09-11.md` e `reports/validacao-antigravity-2026-09-11.md`.
+
+Próximos passos sugeridos:
+
+1. Sergio testar manualmente no navegador: leitura em voz alta e botão Copiar (não verificáveis em headless).
+2. Fechar as escolhas pendentes do README: tradução automática, favoritos (entraram na interface), tamanho do histórico (12, desativado por padrão), tom de azul/tipografia.
+3. Decidir se o Omini fica em destaque no hub e se o Translatorvg passa a ser marcado como versão anterior.
+4. Limpeza: worktrees em `.orchestration/` (`feat/interface`, `feat/translation`, `qa/validation`) já estão integrados em `main` e podem ser removidos.
+
+Notas de orquestração: o Codex falhou ao iniciar (sem permissão de escrita em `~/.codex`). O Antigravity em modo `agy -p` precisa de permissões pré-aprovadas; na validação foi usado `--dangerously-skip-permissions --sandbox`, autorizado pontualmente.
+
+---
+
+Estado original: tarefas preparadas, ainda não enviadas às CLIs. O README é a referência de decisões; este arquivo delimita a execução após o fechamento do briefing.
 
 ## Escopo proposto
 
